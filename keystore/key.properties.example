@@ -5,18 +5,18 @@
 # Windows (PowerShell) 在 android 目录：
 #   mkdir keystore -Force
 #   keytool -genkeypair -v `
-#     -keystore keystore/lumin-release.jks `
+#     -keystore keystore/lumeterm-release.jks `
 #     -keyalg RSA -keysize 2048 -validity 10000 `
-#     -alias lumin `
+#     -alias lumeterm `
 #     -storepass 你的仓库密码 `
 #     -keypass 你的密钥密码 `
-#     -dname "CN=Lumin SSH, OU=Android, O=Lumin, L=Unknown, ST=Unknown, C=CN"
+#     -dname "CN=LumeTerm, OU=Android, O=LumeTerm, L=Unknown, ST=Unknown, C=CN"
 #
 # 2. 填写本文件（路径相对 android 工程根目录）：
 
-storeFile=keystore/lumin-release.jks
+storeFile=keystore/lumeterm-release.jks
 storePassword=改成你的仓库密码
-keyAlias=lumin
+keyAlias=lumeterm
 keyPassword=改成你的密钥密码
 
 # 3. 本地打签名包：

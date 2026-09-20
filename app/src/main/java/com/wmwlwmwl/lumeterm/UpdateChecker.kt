@@ -17,7 +17,7 @@ data class AppUpdateInfo(
 
 object UpdateChecker {
     /** GitHub Releases latest API for the Android repo. */
-    const val DEFAULT_REPO = "wmwlwmwl/Lumin-SSH-Android"
+    const val DEFAULT_REPO = "wmwlwmwl/LumeTerm-Android"
 
     fun releasesLatestApi(repo: String = DEFAULT_REPO): String =
         "https://api.github.com/repos/$repo/releases/latest"
@@ -64,7 +64,7 @@ object UpdateChecker {
                 readTimeout = 12_000
                 requestMethod = "GET"
                 setRequestProperty("Accept", "application/vnd.github+json")
-                setRequestProperty("User-Agent", "Lumin-SSH-Android")
+                setRequestProperty("User-Agent", "LumeTerm-Android")
             }
             try {
                 val code = conn.responseCode
@@ -91,7 +91,7 @@ object UpdateChecker {
                 var apkUrl: String? = null
                 var apkName: String? = null
                 if (assets != null) {
-                    // Prefer Lumin-V*-android.apk naming from our workflow
+                    // Prefer LumeTerm-V*-android.apk naming from our workflow
                     for (i in 0 until assets.length()) {
                         val a = assets.getJSONObject(i)
                         val name = a.optString("name")

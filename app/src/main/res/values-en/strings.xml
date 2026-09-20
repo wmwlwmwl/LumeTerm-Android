@@ -51,8 +51,8 @@ Local data is unaffected.</string>
     <string name="desktop_project">Desktop repository</string>
     <string name="open_github">Open GitHub</string>
     <string name="open_desktop_github">Open desktop GitHub</string>
-    <string name="github_repo">wmwlwmwl/Lumin-SSH-Android</string>
-    <string name="github_desktop_repo">wmwlwmwl/Lumin-SSH</string>
+    <string name="github_repo">wmwlwmwl/LumeTerm-Android</string>
+    <string name="github_desktop_repo">wmwlwmwl/LumeTerm</string>
     <string name="sync_scope">Sync scope</string>
     <string name="sync_scope_description">Syncs servers, credentials, quick commands, proxy nodes, and pass-through desktop AI configuration data.</string>
     <string name="sync_scope_excludes">Images, binary files, and file manager settings are not synced. Android and desktop ship on separate schedules; check companion versions only when the sync format changes.</string>
@@ -140,6 +140,11 @@ Local data is unaffected.</string>
     <string name="export_encrypted_custom_password">Export encrypted (custom password)</string>
     <string name="data_import_description">Imports plain JSON and encrypted .lumeterm2 (legacy .lumin2 accepted). Encrypted files first try the local recovery password, then prompt for a password if needed.</string>
     <string name="import_from_file">Import from file</string>
+
+    <string name="migration_guide_title">Migrate data from Lumin SSH</string>
+    <string name="migration_guide_body">This app has been renamed from Lumin SSH to LumeTerm with a new application ID, so data from the old app cannot be inherited directly. To migrate:\n\n1. If cloud sync was enabled in the old app: configure the same account under "Data Management → Cloud Sync" and set the directory to /Lumin/ (the old default) to restore your backup;\n2. For local data only: export a .lumin2 or .json file from "Data Management" in the old app, then import it here;\n3. After restoring, you may switch the sync directory back to /LumeTerm/.</string>
+    <string name="migration_guide_never_show">Don\'t show again</string>
+    <string name="migration_guide_ok">Got it</string>
 
     <string name="credential_management">Credential management</string>
     <string name="private_key_auth">Private key auth</string>
@@ -404,7 +409,7 @@ Local data is unaffected.</string>
     <string name="error_unknown">Unknown error</string>
     <string name="error_invalid_backup">Invalid backup format</string>
     <string name="error_recovery_password">Incorrect recovery password</string>
-    <string name="error_no_cloud_backup">No Lumin backup found in the cloud</string>
+    <string name="error_no_cloud_backup">No LumeTerm backup found in the cloud</string>
     <string name="error_webdav_request">WebDAV request failed%1$s</string>
     <string name="error_r2_request">R2 request failed%1$s</string>
     <string name="error_ftp_request">FTP request failed%1$s</string>

@@ -52,8 +52,8 @@
     <string name="desktop_project">桌面端仓库</string>
     <string name="open_github">打开 GitHub</string>
     <string name="open_desktop_github">打开桌面端 GitHub</string>
-    <string name="github_repo">wmwlwmwl/Lumin-SSH-Android</string>
-    <string name="github_desktop_repo">wmwlwmwl/Lumin-SSH</string>
+    <string name="github_repo">wmwlwmwl/LumeTerm-Android</string>
+    <string name="github_desktop_repo">wmwlwmwl/LumeTerm</string>
     <string name="sync_scope">同步范围</string>
     <string name="sync_scope_description">同步服务器、凭据、快捷命令、代理节点，以及桌面端 AI 配置的透传数据。</string>
     <string name="sync_scope_excludes">不同步图片、二进制文件和文件管理器设置。Android 与桌面分开发版；仅同步格式变更时需关注配套版本。</string>
@@ -141,6 +141,11 @@
     <string name="export_encrypted_custom_password">导出密文（自定义密码）</string>
     <string name="data_import_description">导入支持明文 JSON 与密文 .lumeterm2（兼容旧 .lumin2）；密文会先尝试本机恢复密码，失败时提示输入密码。</string>
     <string name="import_from_file">从文件导入</string>
+
+    <string name="migration_guide_title">从 Lumin SSH 迁移数据</string>
+    <string name="migration_guide_body">本应用已由 Lumin SSH 更名为 LumeTerm，并更换了应用包名，旧版数据无法直接继承。请按以下方式迁移：\n\n1. 旧版开过云同步：在「数据管理 → 云同步」配置同一账号，目录填 /Lumin/（旧默认目录）即可恢复备份；\n2. 只有本地数据：先在旧版「数据管理」导出 .lumin2 或 .json 文件，再在本应用导入；\n3. 恢复完成后，可将云同步目录改回 /LumeTerm/。</string>
+    <string name="migration_guide_never_show">不再显示</string>
+    <string name="migration_guide_ok">我知道了</string>
 
     <string name="credential_management">凭据管理</string>
     <string name="private_key_auth">私钥认证</string>
@@ -405,7 +410,7 @@
     <string name="error_unknown">未知错误</string>
     <string name="error_invalid_backup">备份格式无效</string>
     <string name="error_recovery_password">恢复密码错误</string>
-    <string name="error_no_cloud_backup">云端没有 Lumin 备份</string>
+    <string name="error_no_cloud_backup">云端没有 LumeTerm 备份</string>
     <string name="error_webdav_request">WebDAV 请求失败%1$s</string>
     <string name="error_r2_request">R2 请求失败%1$s</string>
     <string name="error_ftp_request">FTP 请求失败%1$s</string>

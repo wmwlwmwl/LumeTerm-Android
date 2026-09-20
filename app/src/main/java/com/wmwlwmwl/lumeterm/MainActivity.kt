@@ -68,6 +68,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             var appLanguage by remember { mutableStateOf(store.loadAppLanguage()) }
             var appTheme by remember { mutableStateOf(store.loadAppTheme()) }
+            var showMigrationGuide by remember { mutableStateOf(!store.loadMigrationGuideDismissed()) }
             LuminTheme(themeMode = appTheme) {
                 val view = LocalView.current
                 val useLightSystemBars = !LuminColors.isDark
@@ -79,6 +80,15 @@ class MainActivity : ComponentActivity() {
                 }
                 Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     Box(Modifier.fillMaxSize().statusBarsPadding()) {
+                        if (showMigrationGuide) {
+                            MigrationGuideDialog(
+                                onDismiss = { showMigrationGuide = false },
+                                onNeverShow = {
+                                    store.saveMigrationGuideDismissed()
+                                    showMigrationGuide = false
+                                },
+                            )
+                        }
                         LuminLiteApp(
                             store = store,
                             requestedSessionId = requestedSessionIdState.value,

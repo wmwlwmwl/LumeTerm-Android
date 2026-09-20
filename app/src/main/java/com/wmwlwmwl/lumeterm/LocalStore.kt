@@ -195,6 +195,12 @@ class LocalStore(context: Context) {
         prefs.edit().putBoolean("app_log_enabled", enabled).apply()
     }
 
+    fun loadMigrationGuideDismissed(): Boolean = prefs.getBoolean("migration_guide_dismissed", false)
+
+    fun saveMigrationGuideDismissed() {
+        prefs.edit().putBoolean("migration_guide_dismissed", true).apply()
+    }
+
     fun loadTerminalFontSize() = prefs.getInt("terminal_font_size", 8)
 
     fun saveTerminalFontSize(size: Int) {

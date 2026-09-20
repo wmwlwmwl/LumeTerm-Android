@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -31,6 +33,28 @@ fun ConfirmDialog(title: String, text: String, onCancel: () -> Unit, onConfirm: 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                     LuminSecondaryButton(onClick = onCancel, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.cancel)) }
                     LuminDangerButton(onClick = onConfirm, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.delete)) }
+                }
+            }
+        }
+    }
+}
+
+// 品牌改名（包名更换）后的数据迁移指引，启动时展示一次
+@Composable
+fun MigrationGuideDialog(onDismiss: () -> Unit, onNeverShow: () -> Unit) {
+    Dialog(onDismissRequest = onDismiss) {
+        LuminDialogCard {
+            Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(stringResource(R.string.migration_guide_title), style = MaterialTheme.typography.titleLarge, color = LuminColors.TextPrimary)
+                Text(
+                    stringResource(R.string.migration_guide_body),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = LuminColors.TextSecondary,
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                    LuminSecondaryButton(onClick = onNeverShow, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.migration_guide_never_show)) }
+                    LuminPrimaryButton(onClick = onDismiss, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.migration_guide_ok)) }
                 }
             }
         }
