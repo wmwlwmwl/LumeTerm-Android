@@ -123,10 +123,10 @@ jobs:
 
       - name: Build release APK
         env:
-          LUMIN_STORE_FILE: ${{ steps.sign.outputs.enabled == 'true' && steps.sign.outputs.keystore || '' }}
-          LUMIN_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          LUMIN_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          LUMIN_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          LUMETERM_STORE_FILE: ${{ steps.sign.outputs.enabled == 'true' && steps.sign.outputs.keystore || '' }}
+          LUMETERM_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          LUMETERM_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          LUMETERM_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: ./gradlew :app:assembleRelease --stacktrace
 
       - name: Package APK + SHA256
@@ -136,8 +136,8 @@ jobs:
           VERSION="${{ steps.ver.outputs.version }}"
           APK=$(ls app/build/outputs/apk/release/*.apk | head -n1)
           test -f "$APK"
-          # 命名对齐桌面风格：Lumin-V{version}-android.apk
-          NAME="Lumin-V${VERSION}-android.apk"
+          # 命名对齐桌面风格：LumeTerm-V{version}-android.apk
+          NAME="LumeTerm-V${VERSION}-android.apk"
           cp "$APK" "$NAME"
           sha256sum "$NAME" | sed "s|  .*|  ${NAME}|" > "${NAME}.sha256"
           echo "path=$NAME" >> "$GITHUB_OUTPUT"
@@ -149,7 +149,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.ver.outputs.tag }}
-          name: "Lumin SSH Android v${{ steps.ver.outputs.version }}"
+          name: "LumeTerm Android v${{ steps.ver.outputs.version }}"
           generate_release_notes: false
           files: |
             ${{ steps.apk.outputs.path }}
@@ -159,9 +159,9 @@ jobs:
             ${{ steps.notes.outputs.body }}
 
             ## 产物下载
-            - Android APK ([Lumin-V${{ steps.ver.outputs.version }}-android.apk](https://github.com/${{ github.repository }}/releases/download/${{ steps.ver.outputs.tag }}/Lumin-V${{ steps.ver.outputs.version }}-android.apk))：安装包
-            - SHA256 校验 ([Lumin-V${{ steps.ver.outputs.version }}-android.apk.sha256](https://github.com/${{ github.repository }}/releases/download/${{ steps.ver.outputs.tag }}/Lumin-V${{ steps.ver.outputs.version }}-android.apk.sha256))：校验文件完整性
-            - 本 Release **仅 Android**，桌面端见 [Lumin-SSH](https://github.com/wmwlwmwl/Lumin-SSH/releases)
+            - Android APK ([LumeTerm-V${{ steps.ver.outputs.version }}-android.apk](https://github.com/${{ github.repository }}/releases/download/${{ steps.ver.outputs.tag }}/LumeTerm-V${{ steps.ver.outputs.version }}-android.apk))：安装包
+            - SHA256 校验 ([LumeTerm-V${{ steps.ver.outputs.version }}-android.apk.sha256](https://github.com/${{ github.repository }}/releases/download/${{ steps.ver.outputs.tag }}/LumeTerm-V${{ steps.ver.outputs.version }}-android.apk.sha256))：校验文件完整性
+            - 本 Release **仅 Android**，桌面端见 [LumeTerm](https://github.com/wmwlwmwl/LumeTerm/releases)
             - 许可见仓库 [LICENSE](LICENSE)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

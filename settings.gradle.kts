@@ -15,5 +15,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "LuminAndroid"
+rootProject.name = "LumeTermAndroid"
 include(":app")

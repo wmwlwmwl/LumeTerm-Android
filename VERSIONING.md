@@ -1,8 +1,8 @@
 # 版本与发版约定（Android 独立仓库）
 
-本仓是 **Lumin SSH 的 Android 端**，与桌面仓 **分开版本、分开发版**。
+本仓是 **LumeTerm 的 Android 端**，与桌面仓 **分开版本、分开发版**。
 
-桌面仓：https://github.com/wmwlwmwl/Lumin-SSH  
+桌面仓：https://github.com/wmwlwmwl/LumeTerm  
 
 ---
 
@@ -53,11 +53,11 @@ desktop-v1.1.8
    git push origin android-v0.1.0
    ```  
 5. GitHub Release（自动，结构与桌面端一致）：
-   - 标题：`Lumin SSH Android v0.1.0`（对齐桌面 `Lumin SSH Client v…`）
+   - 标题：`LumeTerm Android v0.1.0`（对齐桌面 `LumeTerm Client v…`）
    - 正文两块：
      1. `## 更新日志` ← 从 [CHANGELOG.md](CHANGELOG.md) 对应版本自动抽取
      2. `## 产物下载` ← APK + `.sha256` 链接
-   - 附件：`Lumin-V0.1.0-android.apk` 与 `Lumin-V0.1.0-android.apk.sha256`
+   - 附件：`LumeTerm-V0.1.0-android.apk` 与 `LumeTerm-V0.1.0-android.apk.sha256`
    - 若动了同步，在 CHANGELOG 该版本下写「需桌面 ≥ x.y」
 
 **不需要**同时发桌面包。
@@ -82,20 +82,20 @@ desktop-v1.1.8
 
 ## 5. 新建 GitHub 仓库时
 
-推荐仓库名（桌面已占用 `Lumin-SSH`）：
+推荐仓库名（桌面已占用 `LumeTerm`）：
 
 | 名称 | 说明 |
 |------|------|
-| **`Lumin-SSH-Android`** | 推荐，一眼能分端 |
-| `lumin-ssh-android` | 小写亦可 |
+| **`LumeTerm-Android`** | 推荐，一眼能分端 |
+| `lumeterm-android` | 小写亦可 |
 
-不要用与桌面完全同名的 `Lumin-SSH` 再开一个，除非换账号/组织。
+不要用与桌面完全同名的 `LumeTerm` 再开一个，除非换账号/组织。
 
 首次推送示例：
 
 ```bash
 cd android
-git remote add origin https://github.com/wmwlwmwl/Lumin-SSH-Android.git
+git remote add origin https://github.com/wmwlwmwl/LumeTerm-Android.git
 git checkout -b main   # 或从现有分支整理后推 main
 git push -u origin main
 git push origin android-v0.1.0   # 若已打 tag
@@ -104,7 +104,7 @@ git push origin android-v0.1.0   # 若已打 tag
 桌面仓 README 可加一行：
 
 ```markdown
-Android 客户端：[Lumin-SSH-Android](https://github.com/wmwlwmwl/Lumin-SSH-Android)
+Android 客户端：[LumeTerm-Android](https://github.com/wmwlwmwl/LumeTerm-Android)
 ```
 
 ---
@@ -140,7 +140,7 @@ git push origin android-v0.1.0
 ```
 
 几分钟后在 GitHub → **Actions** 看进度，在 **Releases** 下载  
-`Lumin-SSH-Android-0.1.0.apk`。
+`LumeTerm-Android-0.1.0.apk`。
 
 ### 签名发布（本地 + GitHub）
 
@@ -151,12 +151,12 @@ git push origin android-v0.1.0
 ```powershell
 mkdir keystore -Force
 keytool -genkeypair -v `
-  -keystore keystore/lumin-release.jks `
+  -keystore keystore/lumeterm-release.jks `
   -keyalg RSA -keysize 2048 -validity 10000 `
-  -alias lumin `
+  -alias lumeterm `
   -storepass 你的仓库密码 `
   -keypass 你的密钥密码 `
-  -dname "CN=Lumin SSH, OU=Android, O=Lumin, L=Unknown, ST=Unknown, C=CN"
+  -dname "CN=LumeTerm, OU=Android, O=LumeTerm, L=Unknown, ST=Unknown, C=CN"
 ```
 
 #### B. 本地签名配置
@@ -178,13 +178,13 @@ copy keystore\key.properties.example keystore\key.properties
 |--------|------|
 | `ANDROID_KEYSTORE_BASE64` | 整份 `.jks` 的 base64 |
 | `ANDROID_KEYSTORE_PASSWORD` | 与 key.properties 的 storePassword 一致 |
-| `ANDROID_KEY_ALIAS` | 如 `lumin` |
+| `ANDROID_KEY_ALIAS` | 如 `lumeterm` |
 | `ANDROID_KEY_PASSWORD` | 与 key.properties 的 keyPassword 一致 |
 
 PowerShell 生成 base64 并复制到剪贴板：
 
 ```powershell
-[Convert]::ToBase64String([IO.File]::ReadAllBytes("keystore\lumin-release.jks")) | Set-Clipboard
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("keystore\lumeterm-release.jks")) | Set-Clipboard
 ```
 
 配置后，推送 `android-v*` 标签会打出**签名** APK 并挂到 Release。  
@@ -200,6 +200,6 @@ PowerShell 生成 base64 并复制到剪贴板：
 |----|-----|
 | versionName | `0.1.9`（根目录 `VERSION`） |
 | versionCode | `10` |
-| 应用显示名 | Lumin SSH |
+| 应用显示名 | LumeTerm |
 | applicationId | `com.lumin.ssh.android`（改名商店会当成新应用，勿轻易改） |
 | 自动打包 | `.github/workflows/android-ci.yml` / `android-release.yml` |

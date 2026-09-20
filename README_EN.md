@@ -1,13 +1,13 @@
-# Lumin SSH (Android)
+# LumeTerm (Android)
 
-**Android client** of the Lumin SSH suite.  
+**Android client** of the LumeTerm suite.  
 Shares servers, credentials, quick commands, proxies, and cloud sync with the desktop app.
 
 | | |
 |--|--|
-| **Product** | Lumin SSH |
+| **Product** | LumeTerm |
 | **This repo** | Android |
-| **Desktop** | [wmwlwmwl/Lumin-SSH](https://github.com/wmwlwmwl/Lumin-SSH) |
+| **Desktop** | [wmwlwmwl/LumeTerm](https://github.com/wmwlwmwl/LumeTerm) |
 | **Version** | See `versionName` in [app/build.gradle.kts](app/build.gradle.kts) |
 
 ---
@@ -16,7 +16,7 @@ Shares servers, credentials, quick commands, proxies, and cloud sync with the de
 
 | Repository | Platform | Release cadence |
 |------------|----------|-----------------|
-| [Lumin-SSH](https://github.com/wmwlwmwl/Lumin-SSH) | Desktop | Independent |
+| [LumeTerm](https://github.com/wmwlwmwl/LumeTerm) | Desktop | Independent |
 | **This repo** | Android | Independent |
 
 Desktop can ship without an Android release, and the reverse.  
@@ -39,7 +39,7 @@ JDK 17 + Android SDK (compileSdk 35).
 
 ## License
 
-See [LICENSE](LICENSE) (**Lumin SSH Android Source License 1.1**).
+See [LICENSE](LICENSE) (**LumeTerm Android Source License 1.1**).
 
 | | |
 |--|--|

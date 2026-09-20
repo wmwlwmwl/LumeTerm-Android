@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Lumin SSH</string>
+    <string name="app_name">LumeTerm</string>
     <string name="automatic_sync_stopped">Automatic sync stopped: %1$s</string>
     <string name="sync_in_progress">Sync is already in progress</string>
     <string name="cancel">Cancel</string>
@@ -45,7 +45,7 @@ Local data is unaffected.</string>
     <string name="about_title">About</string>
     <string name="about_version">Version %1$s (%2$d)</string>
     <string name="unknown">Unknown</string>
-    <string name="about_description">Android client of Lumin SSH. Manage servers, credentials, quick commands, proxies, and cloud sync. Releases are independent of the desktop app; data stays compatible via cloud sync.</string>
+    <string name="about_description">Android client of LumeTerm. Manage servers, credentials, quick commands, proxies, and cloud sync. Releases are independent of the desktop app; data stays compatible via cloud sync.</string>
     <string name="project">Project</string>
     <string name="android_project">Android repository</string>
     <string name="desktop_project">Desktop repository</string>

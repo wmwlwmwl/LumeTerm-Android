@@ -9,11 +9,11 @@ import java.io.File
 import java.io.FileInputStream
 
 // versionName 读根目录 VERSION；versionCode 发版时手动 +1
-val luminVersionName: String = rootProject.file("VERSION").takeIf { it.exists() }?.readText()?.trim().orEmpty()
+val lumetermVersionName: String = rootProject.file("VERSION").takeIf { it.exists() }?.readText()?.trim().orEmpty()
     .ifBlank { "0.1.0" }
 
 // 本地：android/keystore/key.properties（勿提交）
-// CI：环境变量 LUMIN_STORE_FILE / LUMIN_STORE_PASSWORD / LUMIN_KEY_ALIAS / LUMIN_KEY_PASSWORD
+// CI：环境变量 LUMETERM_STORE_FILE / LUMETERM_STORE_PASSWORD / LUMETERM_KEY_ALIAS / LUMETERM_KEY_PASSWORD
 val keystorePropertiesFile = rootProject.file("keystore/key.properties")
 val keystoreProperties = Properties().apply {
     if (keystorePropertiesFile.exists()) {
@@ -25,10 +25,10 @@ fun propOrEnv(propKey: String, envKey: String): String? =
     keystoreProperties.getProperty(propKey)?.trim()?.takeIf { it.isNotBlank() }
         ?: System.getenv(envKey)?.trim()?.takeIf { it.isNotBlank() }
 
-val storeFilePath = propOrEnv("storeFile", "LUMIN_STORE_FILE")
-val storePasswordValue = propOrEnv("storePassword", "LUMIN_STORE_PASSWORD")
-val keyAliasValue = propOrEnv("keyAlias", "LUMIN_KEY_ALIAS")
-val keyPasswordValue = propOrEnv("keyPassword", "LUMIN_KEY_PASSWORD")
+val storeFilePath = propOrEnv("storeFile", "LUMETERM_STORE_FILE")
+val storePasswordValue = propOrEnv("storePassword", "LUMETERM_STORE_PASSWORD")
+val keyAliasValue = propOrEnv("keyAlias", "LUMETERM_KEY_ALIAS")
+val keyPasswordValue = propOrEnv("keyPassword", "LUMETERM_KEY_PASSWORD")
 
 // 相对路径一律相对 android/ 工程根，不要相对 app/
 val releaseStoreFile: File? = storeFilePath?.let { path ->
@@ -66,15 +66,15 @@ if (!hasReleaseSigning) {
 }
 
 android {
-    namespace = "com.lumin.ssh.android"
+    namespace = "com.wmwlwmwl.lumeterm"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.lumin.ssh.android"
+        applicationId = "com.wmwlwmwl.lumeterm"
         minSdk = 26
         targetSdk = 35
         versionCode = 10
-        versionName = luminVersionName
+        versionName = lumetermVersionName
     }
 
     signingConfigs {

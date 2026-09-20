@@ -6,7 +6,12 @@
 
 ---
 
-## [Unreleased]
+## ## [Unreleased] - 品牌改名
+
+- 品牌由 Lumin SSH 更名为 **LumeTerm**；applicationId 更换为 `com.wmwlwmwl.lumeterm`（老用户需卸载重装，云同步目录默认改为 `/LumeTerm/`，旧备份在 `/Lumin/` 需调整目录配置或迁移云端目录）
+- 备份加密格式对齐桌面端：写 `LUMETERM2:`/`.lumeterm2`，读兼容旧 `LUMIN2:`/`.lumin2`
+
+[Unreleased]
 
 ### 计划
 
@@ -176,7 +181,7 @@
 
 ---
 
-[Unreleased]: https://github.com/wmwlwmwl/Lumin-SSH-Android/compare/android-v0.1.9...HEAD
+[Unreleased]: https://github.com/wmwlwmwl/LumeTerm-Android/compare/android-v0.1.9...HEAD
 [0.1.9]: https://github.com/wmwlwmwl/Lumin-SSH-Android/releases/tag/android-v0.1.9
 [0.1.8]: https://github.com/wmwlwmwl/Lumin-SSH-Android/releases/tag/android-v0.1.8
 [0.1.7]: https://github.com/wmwlwmwl/Lumin-SSH-Android/releases/tag/android-v0.1.7

@@ -1,13 +1,13 @@
-# Lumin SSH（Android）
+# LumeTerm（Android）
 
 跨端 SSH 客户端的 **Android 移动端**。  
 与桌面端数据互通（服务器、凭据、快捷命令、代理、云同步）。
 
 | | |
 |--|--|
-| **产品名** | Lumin SSH |
+| **产品名** | LumeTerm |
 | **本仓** | Android 客户端 |
-| **桌面端** | [wmwlwmwl/Lumin-SSH](https://github.com/wmwlwmwl/Lumin-SSH) |
+| **桌面端** | [wmwlwmwl/LumeTerm](https://github.com/wmwlwmwl/LumeTerm) |
 | **当前版本** | 见 [app/build.gradle.kts](app/build.gradle.kts) 中 `versionName` |
 
 ---
@@ -16,7 +16,7 @@
 
 | 仓库 | 内容 | 发版节奏 |
 |------|------|----------|
-| [Lumin-SSH](https://github.com/wmwlwmwl/Lumin-SSH) | 桌面（Windows / macOS / Linux） | 独立 |
+| [LumeTerm](https://github.com/wmwlwmwl/LumeTerm) | 桌面（Windows / macOS / Linux） | 独立 |
 | **本仓** | Android | 独立 |
 
 - **PC 更新，Android 不必更新**（反之亦然）。
@@ -104,7 +104,7 @@ git push origin android-v0.1.0
 
 ## License
 
-见 [LICENSE](LICENSE)（**Lumin SSH Android Source License 1.1**）。
+见 [LICENSE](LICENSE)（**LumeTerm Android Source License 1.1**）。
 
 | | |
 |--|--|
