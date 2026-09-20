@@ -16,7 +16,10 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 
-private const val LUMIN2_PREFIX = "LUMIN2:"
+// ponytail: 写新读旧——加密写 LUMETERM2 前缀、文件写 .lumeterm2（与 PC 端 LumeTerm 一致）；
+// 读取兼容旧 LUMIN2 前缀与 .lumin2 扩展名，待两端新版本铺开后（预计两个大版本）移除
+private const val LUMETERM2_PREFIX = "LUMETERM2:"
+private const val LUMIN2_LEGACY_PREFIX = "LUMIN2:"
 private const val LUMIN2_ITERATIONS = 210000
 private const val LUMIN2_HEADER_SIZE = 33
 
@@ -46,13 +49,17 @@ internal fun encryptLumin2WithSaltNonce(text: String, password: String, salt: By
     cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), GCMParameterSpec(128, nonce))
     val header = ByteBuffer.allocate(LUMIN2_HEADER_SIZE).order(ByteOrder.BIG_ENDIAN)
         .put(2).putInt(LUMIN2_ITERATIONS).put(salt).put(nonce).array()
-    return LUMIN2_PREFIX + Base64.getEncoder().encodeToString(header + cipher.doFinal(text.toByteArray(Charsets.UTF_8)))
+    return LUMETERM2_PREFIX + Base64.getEncoder().encodeToString(header + cipher.doFinal(text.toByteArray(Charsets.UTF_8)))
 }
 
 fun decryptLumin2(text: String, password: String): String {
-    require(text.startsWith(LUMIN2_PREFIX)) { "缺少 LUMIN2 前缀" }
+    val prefix = when {
+        text.startsWith(LUMETERM2_PREFIX) -> LUMETERM2_PREFIX
+        text.startsWith(LUMIN2_LEGACY_PREFIX) -> LUMIN2_LEGACY_PREFIX
+        else -> throw IllegalArgumentException("缺少 LUMIN2 前缀")
+    }
     val payload = try {
-        Base64.getDecoder().decode(text.removePrefix(LUMIN2_PREFIX))
+        Base64.getDecoder().decode(text.removePrefix(prefix))
     } catch (e: IllegalArgumentException) {
         throw IllegalArgumentException("LUMIN2 Base64 无效", e)
     }
@@ -77,7 +84,7 @@ fun parseSnapshotPayload(text: String, password: String?): SyncSnapshot {
             .getOrElse { throw SnapshotFormatException("备份 JSON 格式无效", it) }
     }
     val decrypted = when {
-        trimmed.startsWith(LUMIN2_PREFIX) -> {
+        trimmed.startsWith(LUMETERM2_PREFIX) || trimmed.startsWith(LUMIN2_LEGACY_PREFIX) -> {
             if (password == null) throw RecoveryPasswordException("LUMIN2 备份需要恢复密码")
             try {
                 decryptLumin2(trimmed, password)
@@ -87,14 +94,16 @@ fun parseSnapshotPayload(text: String, password: String?): SyncSnapshot {
                 throw SnapshotFormatException("LUMIN2 备份结构无效", e)
             }
         }
-        else -> throw SnapshotFormatException("不支持的备份格式：仅支持明文 JSON 与 LUMIN2 密文")
+        else -> throw SnapshotFormatException("不支持的备份格式：仅支持明文 JSON 与 LUMIN2/LUMETERM2 密文")
     }
     return runCatching { syncSnapshotFromJson(JSONObject(decrypted)) }
         .getOrElse { throw SnapshotFormatException("备份解密成功，但内容不是有效 SyncSnapshot", it) }
 }
 
-fun backupFileName(encrypted: Boolean): String = "connections_backup_${backupTimestamp()}.${if (encrypted) "lumin2" else "json"}"
+fun backupFileName(encrypted: Boolean): String = "connections_backup_${backupTimestamp()}.${if (encrypted) "lumeterm2" else "json"}"
 
 fun isBackupName(name: String): Boolean {
-    return name.startsWith("connections_backup_") && (name.endsWith(".lumin2") || name.endsWith(".json"))
+    // ponytail: .lumin2 为旧扩展名（读兼容）；本端写入用 .lumeterm2
+    return name.startsWith("connections_backup_") &&
+        (name.endsWith(".lumin2") || name.endsWith(".lumeterm2") || name.endsWith(".json"))
 }

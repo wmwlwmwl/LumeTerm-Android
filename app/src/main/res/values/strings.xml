@@ -134,12 +134,12 @@
     <string name="confirm">确定</string>
     <string name="close">关闭</string>
 
-    <string name="data_export_description">导出全部节点：明文 .json 或密文 .lumin2。密文可复用云端恢复密码，也可输入自定义密码。</string>
+    <string name="data_export_description">导出全部节点：明文 .json 或密文 .lumeterm2。密文可复用云端恢复密码，也可输入自定义密码。</string>
     <string name="export_plain_json">导出明文 JSON</string>
     <string name="export_encrypted_reuse_recovery_password">导出密文（复用云端恢复密码）</string>
     <string name="export_encrypted_requires_recovery_password">导出密文（需先设置恢复密码）</string>
     <string name="export_encrypted_custom_password">导出密文（自定义密码）</string>
-    <string name="data_import_description">导入支持明文 JSON 与密文 .lumin2；密文会先尝试本机恢复密码，失败时提示输入密码。</string>
+    <string name="data_import_description">导入支持明文 JSON 与密文 .lumeterm2（兼容旧 .lumin2）；密文会先尝试本机恢复密码，失败时提示输入密码。</string>
     <string name="import_from_file">从文件导入</string>
 
     <string name="credential_management">凭据管理</string>
@@ -251,7 +251,7 @@
     <string name="sync_encryption">同步加密</string>
     <string name="unencrypted">未加密</string>
     <string name="encrypted">已加密</string>
-    <string name="sync_encryption_off_hint">未开启时按明文 .json 同步；开启后使用恢复密码生成 .lumin2 加密备份。</string>
+    <string name="sync_encryption_off_hint">未开启时按明文 .json 同步；开启后使用恢复密码生成 .lumeterm2 加密备份。</string>
     <string name="sync_encryption_on_hint">云端同步将使用恢复密码加密。多设备必须使用同一个密码，密码丢失后加密备份无法恢复。</string>
     <string name="enable_encryption">开启加密</string>
     <string name="change_password">修改密码</string>
@@ -260,7 +260,7 @@
     <string name="ftp_plain_warning_short">警告：当前使用普通 FTP，连接未加密。</string>
     <string name="ftps_current_short">当前使用显式 FTPS。</string>
     <string name="cloud_sync">云端同步</string>
-    <string name="cloud_sync_encrypted_hint">同步将写入 .lumin2 加密备份</string>
+    <string name="cloud_sync_encrypted_hint">同步将写入 .lumeterm2 加密备份</string>
     <string name="cloud_sync_plain_hint">未开启同步加密时写入明文 .json 备份</string>
     <string name="auto_cloud_backup_enabled">已开启自动云端备份：添加、编辑、删除时自动同步</string>
     <string name="last_sync_time">上次同步: %1$s</string>
@@ -270,11 +270,11 @@
     <string name="restore_from_cloud">从云端恢复</string>
     <string name="no_cloud_backups_retry">云端未找到任何备份文件，请重新选择</string>
     <string name="fetch_backup_list_failed_retry">获取备份列表失败: %1$s，请重新选择</string>
-    <string name="save_password_warning">请妥善保存此密码。密码丢失后，已加密的 .lumin2 备份无法恢复。</string>
+    <string name="save_password_warning">请妥善保存此密码。密码丢失后，已加密的 .lumeterm2 备份无法恢复。</string>
     <string name="enable_sync_encryption">开启同步加密</string>
     <string name="change_sync_encryption_password">修改同步加密密码</string>
     <string name="disable_sync_encryption_title">关闭同步加密</string>
-    <string name="disable_sync_encryption_warning">关闭后新同步备份将按明文 .json 上传；云端已有 .lumin2 备份仍需要原密码才能恢复。</string>
+    <string name="disable_sync_encryption_warning">关闭后新同步备份将按明文 .json 上传；云端已有 .lumeterm2 备份仍需要原密码才能恢复。</string>
     <string name="select_restore_provider">选择恢复来源</string>
     <string name="no_available_cloud_provider">没有可用的云端来源</string>
     <string name="select_cloud_backup">选择云端备份</string>

@@ -133,12 +133,12 @@ Local data is unaffected.</string>
     <string name="confirm">OK</string>
     <string name="close">Close</string>
 
-    <string name="data_export_description">Export all nodes as plain .json or encrypted .lumin2. Encrypted exports can reuse the cloud recovery password or use a custom password.</string>
+    <string name="data_export_description">Export all nodes as plain .json or encrypted .lumeterm2. Encrypted exports can reuse the cloud recovery password or use a custom password.</string>
     <string name="export_plain_json">Export plain JSON</string>
     <string name="export_encrypted_reuse_recovery_password">Export encrypted (reuse cloud recovery password)</string>
     <string name="export_encrypted_requires_recovery_password">Export encrypted (set recovery password first)</string>
     <string name="export_encrypted_custom_password">Export encrypted (custom password)</string>
-    <string name="data_import_description">Imports plain JSON and encrypted .lumin2. Encrypted files first try the local recovery password, then prompt for a password if needed.</string>
+    <string name="data_import_description">Imports plain JSON and encrypted .lumeterm2 (legacy .lumin2 accepted). Encrypted files first try the local recovery password, then prompt for a password if needed.</string>
     <string name="import_from_file">Import from file</string>
 
     <string name="credential_management">Credential management</string>
@@ -250,7 +250,7 @@ Local data is unaffected.</string>
     <string name="sync_encryption">Sync encryption</string>
     <string name="unencrypted">Unencrypted</string>
     <string name="encrypted">Encrypted</string>
-    <string name="sync_encryption_off_hint">When disabled, sync writes plain .json backups. When enabled, recovery password creates encrypted .lumin2 backups.</string>
+    <string name="sync_encryption_off_hint">When disabled, sync writes plain .json backups. When enabled, recovery password creates encrypted .lumeterm2 backups.</string>
     <string name="sync_encryption_on_hint">Cloud sync will encrypt backups with the recovery password. All devices must use the same password; encrypted backups cannot be restored if it is lost.</string>
     <string name="enable_encryption">Enable encryption</string>
     <string name="change_password">Change password</string>
@@ -259,7 +259,7 @@ Local data is unaffected.</string>
     <string name="ftp_plain_warning_short">Warning: plain FTP is in use. The connection is not encrypted.</string>
     <string name="ftps_current_short">Explicit FTPS is in use.</string>
     <string name="cloud_sync">Cloud sync</string>
-    <string name="cloud_sync_encrypted_hint">Sync will write encrypted .lumin2 backups</string>
+    <string name="cloud_sync_encrypted_hint">Sync will write encrypted .lumeterm2 backups</string>
     <string name="cloud_sync_plain_hint">Without sync encryption, sync writes plain .json backups</string>
     <string name="auto_cloud_backup_enabled">Automatic cloud backup is enabled: changes sync automatically</string>
     <string name="last_sync_time">Last sync: %1$s</string>
@@ -269,11 +269,11 @@ Local data is unaffected.</string>
     <string name="restore_from_cloud">Restore from cloud</string>
     <string name="no_cloud_backups_retry">No backup files found in the cloud. Choose again.</string>
     <string name="fetch_backup_list_failed_retry">Failed to fetch backup list: %1$s. Choose again.</string>
-    <string name="save_password_warning">Keep this password safe. Encrypted .lumin2 backups cannot be restored if it is lost.</string>
+    <string name="save_password_warning">Keep this password safe. Encrypted .lumeterm2 backups cannot be restored if it is lost.</string>
     <string name="enable_sync_encryption">Enable sync encryption</string>
     <string name="change_sync_encryption_password">Change sync encryption password</string>
     <string name="disable_sync_encryption_title">Disable sync encryption</string>
-    <string name="disable_sync_encryption_warning">After disabling, new sync backups upload as plain .json. Existing .lumin2 backups still require the original password to restore.</string>
+    <string name="disable_sync_encryption_warning">After disabling, new sync backups upload as plain .json. Existing .lumeterm2 backups still require the original password to restore.</string>
     <string name="select_restore_provider">Choose restore source</string>
     <string name="no_available_cloud_provider">No available cloud source</string>
     <string name="select_cloud_backup">Choose cloud backup</string>

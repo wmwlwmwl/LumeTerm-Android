@@ -46,14 +46,32 @@ private class FakeSyncProvider(
 class SyncLogicTest {
     @Test
     fun lumin2FixedVectorMatchesGo() {
-        val password = "跨端-password-🔐"
+        val password = "跨端-password"
         val payload = """{"connections":[{"id":"vector","host":"example.com","port":22,"username":"root"}],"snapshot_time":1700000000000}"""
         val salt = ByteArray(16) { it.toByte() }
         val nonce = ByteArray(12) { (it + 16).toByte() }
-        val expected = "LUMIN2:AgADNFAAAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobuSS2sCUnXOM1UV1g4ZCENiXBLVh7tzhcV8HkJjqqVdjqjtgc92HbU3EU7+BTIH/QY2lRWwWuHVNiSGCjeIWbJ6o/J5CiWGel3ziScbUDW+RH8VGAgEcPQoj2WgSwzsG2ablk02o/U5EJDWs3NJcrLRpFNoaAwNh3OeGLct1sA/w="
+        val expected = "LUMETERM2:AgADNFAAAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobF9JHcFJkz4QPNXc0pWTEDpoMJ0Nym0pLUA/Ky8DM1AfpbnyW3TqAZ7fkFSbkZiyXk76SFCMLtTyEajS/guHS/eZCMqZwId/HJj4W8SAGmgyg4VY6cb/wYOoXWNDHyyDK1UnV8A0jEU19FbZAFmBsZx/EfFopbXnqw5ec87NowYY="
 
         assertEquals(expected, encryptLumin2WithSaltNonce(payload, password, salt, nonce))
         assertEquals(payload, decryptLumin2(expected, password))
+    }
+
+    @Test
+    fun legacyLumin2PrefixCompat() {
+        // 旧版写 LUMIN2: 前缀（容器结构与新格式完全相同），本端读兼容
+        val lumeterm2 = encryptLumin2("""{"connections":[],"snapshot_time":1}""", "pw跨端兼容")
+        val legacy = "LUMIN2:" + lumeterm2.removePrefix("LUMETERM2:")
+        assertFailsWith<RecoveryPasswordException> { parseSnapshotPayload(legacy, null) }
+        assertEquals(parseSnapshotPayload(lumeterm2, "pw跨端兼容"), parseSnapshotPayload(legacy, "pw跨端兼容"))
+    }
+
+    @Test
+    fun isBackupNameAcceptsLumeterm2() {
+        assertTrue(isBackupName("connections_backup_20260719_140703.013_+0800.lumeterm2"))
+        assertTrue(isBackupName("connections_backup_20260719_140703.013_+0800.lumin2"))
+        assertTrue(isBackupName("connections_backup_20260719_140703.013_+0800.json"))
+        assertFalse(isBackupName("connections_backup_20260719_140703.013_+0800.enc"))
+        assertFalse(isBackupName("other.lumeterm2"))
     }
 
     @Test
@@ -185,7 +203,7 @@ class SyncLogicTest {
         val payload = """{"connections":[],"snapshot_time":1}"""
         val encrypted = encryptLumin2(payload, password)
 
-        assertTrue(encrypted.startsWith("LUMIN2:"))
+        assertTrue(encrypted.startsWith("LUMETERM2:"))
         assertEquals(payload, decryptLumin2(encrypted, password))
         assertTrue(runCatching { decryptLumin2(encrypted, "wrong") }.isFailure)
     }
@@ -204,8 +222,9 @@ class SyncLogicTest {
     }
 
     @Test
-    fun encryptedBackupNamesUseLumin2Only() {
-        assertTrue(backupFileName(true).endsWith(".lumin2"))
+    fun encryptedBackupNamesUseLumeterm2() {
+        assertTrue(backupFileName(true).endsWith(".lumeterm2"))
+        assertTrue(isBackupName("connections_backup_20260713_120000.000_+0800.lumeterm2"))
         assertTrue(isBackupName("connections_backup_20260713_120000.000_+0800.lumin2"))
         assertTrue(isBackupName("connections_backup_20260713_120000.000_+0800.json"))
     }
