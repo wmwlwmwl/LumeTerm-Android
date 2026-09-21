@@ -198,8 +198,8 @@ PowerShell 生成 base64 并复制到剪贴板：
 
 | 项 | 值 |
 |----|-----|
-| versionName | `0.1.9`（根目录 `VERSION`） |
-| versionCode | `10` |
+| versionName | `0.2.0`（根目录 `VERSION`） |
+| versionCode | `11` |
 | 应用显示名 | LumeTerm |
-| applicationId | `com.wmwlwmwl.lumeterm`（v0.1.10 起由 `com.lumin.ssh.android` 更换，商店视为新应用） |
+| applicationId | `com.wmwlwmwl.lumeterm`（v0.2.0 起由 `com.lumin.ssh.android` 更换，商店视为新应用） |
 | 自动打包 | `.github/workflows/android-ci.yml` / `android-release.yml` |

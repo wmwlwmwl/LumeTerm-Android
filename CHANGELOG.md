@@ -6,16 +6,33 @@
 
 ---
 
-## ## [Unreleased] - 品牌改名
-
-- 品牌由 Lumin SSH 更名为 **LumeTerm**；applicationId 更换为 `com.wmwlwmwl.lumeterm`（老用户需卸载重装，云同步目录默认改为 `/LumeTerm/`，旧备份在 `/Lumin/` 需调整目录配置或迁移云端目录）
-- 备份加密格式对齐桌面端：写 `LUMETERM2:`/`.lumeterm2`，读兼容旧 `LUMIN2:`/`.lumin2`
-
-[Unreleased]
+## [Unreleased]
 
 ### 计划
 
 - （空）
+
+---
+
+## [0.2.0] - 2026-09-21
+
+### 新增
+
+- 品牌由 Lumin SSH 更名为 **LumeTerm**：新应用名与新启动图标，applicationId 更换为 `com.wmwlwmwl.lumeterm`（商店视为新应用，老用户需卸载重装）
+- 首启数据迁移指引弹窗：提示调整云同步目录（旧备份在 `/Lumin/`，新默认 `/LumeTerm/`）或改用导出文件导入，可「不再显示」
+
+### 变更
+
+- 备份加密格式对齐桌面端：写 `LUMETERM2:` / `.lumeterm2`，读兼容旧 `LUMIN2:` / `.lumin2`，两端互导互通
+- 云同步默认目录由 `/Lumin/` 改为 `/LumeTerm/`（存量显式配置不变）
+
+### 依赖
+
+- 升级 Gradle Wrapper 至 9.7.1
+
+### 工程
+
+- 仓库引用与残留清理：README / VERSIONING / CI 产物命名与标题同步 LumeTerm
 
 ---
 
@@ -181,7 +198,8 @@
 
 ---
 
-[Unreleased]: https://github.com/wmwlwmwl/LumeTerm-Android/compare/android-v0.1.9...HEAD
+[Unreleased]: https://github.com/wmwlwmwl/LumeTerm-Android/compare/android-v0.2.0...HEAD
+[0.2.0]: https://github.com/wmwlwmwl/LumeTerm-Android/releases/tag/android-v0.2.0
 [0.1.9]: https://github.com/wmwlwmwl/Lumin-SSH-Android/releases/tag/android-v0.1.9
 [0.1.8]: https://github.com/wmwlwmwl/Lumin-SSH-Android/releases/tag/android-v0.1.8
 [0.1.7]: https://github.com/wmwlwmwl/Lumin-SSH-Android/releases/tag/android-v0.1.7
