@@ -51,6 +51,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -152,6 +154,8 @@ fun SshCommandScreen(store: LocalStore, conn: Connection, requestedSessionId: St
     val focusRequester = remember { FocusRequester() }
     val keyboard = LocalSoftwareKeyboardController.current
     val scope = rememberCoroutineScope()
+    // 多行输入的逐行发送协程句柄：新多行输入/退出页面时取消，防陈旧分片后发
+    var pacedPasteJob by remember(conn.id) { mutableStateOf<Job?>(null) }
     val saveTranscriptLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
         if (uri != null) {
             runCatching {
@@ -424,6 +428,8 @@ fun SshCommandScreen(store: LocalStore, conn: Connection, requestedSessionId: St
     }
     fun sendToShell(payload: String) {
         if (payload.isEmpty()) return
+        // 新输入到来即取消上一轮未完成的逐行链，避免陈旧分片与新输入乱序（对齐 PC）
+        pacedPasteJob?.cancel()
         if (!isShellLive()) {
             // 仅回车触发重连；其它输入在断开态忽略（对齐 PC）
             if (!connecting && ('\r' in payload || '\n' in payload)) {
@@ -436,12 +442,31 @@ fun SshCommandScreen(store: LocalStore, conn: Connection, requestedSessionId: St
         val currentShell = stateRef.shell ?: shell ?: return
         // 不打完整 payload（可能含密码）
         AppLog.d("Term", "send len=${payload.length} first=${payload.firstOrNull()?.code}")
-        scope.launch {
-            runCatching { currentShell.sendRaw(payload) }
-                .onFailure {
-                    AppLog.e("Term", "send failed ready=$shellReady connected=${currentShell.isConnected}", it)
-                    // 不写 shellReady=false：保持可弹键盘，下次回车走 requestReconnect
-                }
+        // 多行输入(≥2 段)逐行带间隔发送：一次性灌入时,远端 readline 在上一行 \r
+        // 执行后尚未就绪,紧随的行首字符可能被吞(对齐 PC 端 emitPacedLines)。
+        // 单行/单回车/控制序列不含换行,维持即时发送,零额外延迟。
+        val lines = payload.replace("\r\n", "\n").replace('\r', '\n').split('\n')
+        val trimmed = lines.dropWhile { it.isEmpty() }.dropLastWhile { it.isEmpty() }
+        if (trimmed.size <= 1) {
+            scope.launch {
+                runCatching { currentShell.sendRaw(payload) }
+                    .onFailure {
+                        AppLog.e("Term", "send failed ready=$shellReady connected=${currentShell.isConnected}", it)
+                        // 不写 shellReady=false：保持可弹键盘，下次回车走 requestReconnect
+                    }
+            }
+            return
+        }
+        pacedPasteJob = scope.launch {
+            trimmed.forEachIndexed { index, line ->
+                if (index > 0) delay(120)
+                val chunk = if (line.isEmpty()) "\r" else "$line\r"
+                runCatching { currentShell.sendRaw(chunk) }
+                    .onFailure {
+                        AppLog.e("Term", "send failed ready=$shellReady connected=${currentShell.isConnected}", it)
+                        return@forEachIndexed
+                    }
+            }
         }
     }
     /** 粘滞 CTRL 亮时把字符转成控制符并复位；转不了的（回车/退格/方向键序列）原样发。 */
@@ -498,6 +523,8 @@ fun SshCommandScreen(store: LocalStore, conn: Connection, requestedSessionId: St
         pageAlive.set(true)
         onDispose {
             pageAlive.set(false)
+            pacedPasteJob?.cancel()
+            pacedPasteJob = null
             dismissTrackedDialogs()
             terminal?.apply {
                 dismissUiDialogs()
