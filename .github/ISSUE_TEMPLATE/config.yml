@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "桌面端问题 / 需求 — Desktop issues (other repo)"
+    url: https://github.com/wmwlwmwl/LumeTerm/issues/new/choose
+    about: Windows / macOS / Linux 客户端请到 LumeTerm 仓库提交，两端分仓维护、独立发版。/ Desktop builds live in a separate repo with its own release cycle.

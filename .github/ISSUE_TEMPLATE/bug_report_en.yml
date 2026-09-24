@@ -1,0 +1,120 @@
+name: Bug Report (English)
+description: Report a bug, crash or UI error in LumeTerm for Android
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > Before submitting, please make sure:
+        > 1. You are on the [latest release](https://github.com/wmwlwmwl/LumeTerm-Android/releases)
+        > 2. You searched [existing issues](https://github.com/wmwlwmwl/LumeTerm-Android/issues?q=is%3Aissue) for duplicates
+        >
+        > ⚠️ **Never paste raw config or backup files.** They contain passwords, private keys and proxy secrets in plaintext. Redact them before posting: replace hosts, usernames, IPs and paths with placeholders such as `example.com` / `user`.
+        >
+        > Desktop (Windows / macOS / Linux) issues go to the [LumeTerm](https://github.com/wmwlwmwl/LumeTerm/issues/new/choose) repository.
+
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      description: Shown in Settings → About (matches the repo VERSION file)
+      placeholder: 0.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: android-version
+    attributes:
+      label: Android version
+      placeholder: Android 14
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device model / ROM
+      placeholder: Pixel 8 / stock, Xiaomi 14 / HyperOS
+    validations:
+      required: false
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Affected module
+      options:
+        - SSH connection / session / background keep-alive
+        - Terminal (rendering, input, keyboard, copy & paste)
+        - Servers / groups / credentials
+        - Quick commands
+        - Proxy nodes
+        - Cloud sync (WebDAV / R2 / FTP / SFTP)
+        - Import & export / encrypted backup
+        - UI / theme / language
+        - Auto update
+        - Other / not sure
+    validations:
+      required: true
+
+  - type: input
+    id: server-os
+    attributes:
+      label: Remote server OS (if relevant)
+      placeholder: Ubuntu 22.04 / CentOS 7 / N/A
+    validations:
+      required: false
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Number every step so it can be reproduced
+      placeholder: |
+        1. Create a new server with key-based auth
+        2. Tap connect
+        3. Send the app to background, the notification shows ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What actually happened (crash, error, glitch). For crashes, note whether a crash dialog appeared, or write "see screenshot / recording".
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / error output
+      description: In-app logs or logcat are welcome. Check every line and remove credentials, keys and real hostnames before pasting.
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: frequency
+    attributes:
+      label: How often does it happen?
+      options:
+        - label: Always
+        - label: Sometimes (random)
+        - label: Only once
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist (please verify yourself)
+      options:
+        - label: Still reproduces on the latest version
+        - label: Logs and screenshots are redacted
+        - label: Android-only issue (not reproducible on desktop)
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Drag and drop screenshots or screen recordings into this field
+    validations:
+      required: false
