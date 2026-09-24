@@ -126,7 +126,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
     implementation("sh.calvin.reorderable:reorderable-android:3.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:okhttp:5.5.0")
     implementation("com.github.mwiede:jsch:0.2.20")
     implementation("commons-net:commons-net:3.13.0")
     implementation("com.github.Termux.Termux-app:terminal-emulator:v0.119.0-beta.3")
