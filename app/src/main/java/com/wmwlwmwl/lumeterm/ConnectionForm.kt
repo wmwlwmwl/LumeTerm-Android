@@ -97,7 +97,7 @@ fun ConnectionForm(
                 allowLegacySshRsa = allowLegacySshRsa,
                 proxyMode = proxyMode,
                 proxyNodeId = if (proxyMode == "node") proxyNodeId else "",
-                proxyType = if (proxyType == "http") "http" else "socks5",
+                proxyType = if (proxyType == "http" || proxyType == "https") proxyType else "socks5",
                 proxyHost = if (proxyMode == "custom") proxyHost else "",
                 proxyPort = proxyPort.toIntOrNull() ?: 1080,
                 proxyUsername = if (proxyMode == "custom") proxyUsername else "",
@@ -224,6 +224,7 @@ fun ConnectionForm(
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         LuminChoiceChip("SOCKS5", proxyType == "socks5", { proxyType = "socks5" })
                         LuminChoiceChip("HTTP", proxyType == "http", { proxyType = "http" })
+                        LuminChoiceChip("HTTPS", proxyType == "https", { proxyType = "https" })
                     }
                     OutlinedTextField(proxyHost, { proxyHost = it }, label = { Text(stringResource(R.string.proxy_host)) }, modifier = Modifier.fillMaxWidth(), shape = LuminControlShape, colors = luminTextFieldColors(), singleLine = true)
                     OutlinedTextField(proxyPort, { proxyPort = it.filter { c -> c.isDigit() } }, label = { Text(stringResource(R.string.proxy_port)) }, modifier = Modifier.fillMaxWidth(), shape = LuminControlShape, colors = luminTextFieldColors(), singleLine = true)

@@ -9,14 +9,18 @@ import com.jcraft.jsch.Proxy
 import com.jcraft.jsch.ProxyHTTP
 import com.jcraft.jsch.ProxySOCKS5
 import com.jcraft.jsch.Session
+import com.jcraft.jsch.SocketFactory
 import com.jcraft.jsch.UIKeyboardInteractive
 import com.jcraft.jsch.UserInfo
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.net.InetSocketAddress
+import java.net.Socket
 import java.security.MessageDigest
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -25,6 +29,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.ReentrantLock
+import javax.net.ssl.SSLSocket
+import javax.net.ssl.SSLSocketFactory
 import kotlin.concurrent.withLock
 
 class HostKeyRejectedException : CancellationException("主机密钥未接受")
@@ -360,12 +366,12 @@ class SshShellSession(
             else -> null
         } ?: return null
         if (node.host.isBlank()) return null
-        return if (node.type == "http") {
-            ProxyHTTP(node.host, node.port).apply {
+        return when (node.type) {
+            "http" -> ProxyHTTP(node.host, node.port).apply {
                 if (node.username.isNotBlank()) setUserPasswd(node.username, node.password)
             }
-        } else {
-            ProxySOCKS5(node.host, node.port).apply {
+            "https" -> HttpsProxy(node.host, node.port, node.username, node.password)
+            else -> ProxySOCKS5(node.host, node.port).apply {
                 if (node.username.isNotBlank()) setUserPasswd(node.username, node.password)
             }
         }
@@ -414,5 +420,87 @@ class SshShellSession(
     private fun emit(text: String) {
         val bytes = text.toByteArray()
         onOutput(bytes, bytes.size)
+    }
+}
+
+/**
+ * HTTPS 代理：先与代理完成 TLS 握手，再在加密通道内发 CONNECT。
+ * 证书与主机名均严格校验（endpointIdentificationAlgorithm=HTTPS）。
+ */
+private class HttpsProxy(
+    private val proxyHost: String,
+    private val proxyPort: Int,
+    private val proxyUser: String = "",
+    private val proxyPassword: String = "",
+) : Proxy {
+    private var socket: Socket? = null
+    private var input: InputStream? = null
+    private var output: OutputStream? = null
+
+    override fun connect(socketFactory: SocketFactory?, host: String, port: Int, timeout: Int) {
+        val raw = Socket()
+        socket = raw
+        try {
+            raw.connect(InetSocketAddress(proxyHost, proxyPort), timeout)
+            val tls = (SSLSocketFactory.getDefault() as SSLSocketFactory)
+                .createSocket(raw, proxyHost, proxyPort, true) as SSLSocket
+            socket = tls
+            // Android 默认 SSLSocketFactory 只校验证书链，主机名需手动开启校验
+            tls.sslParameters = tls.sslParameters.apply { endpointIdentificationAlgorithm = "HTTPS" }
+            if (timeout > 0) tls.soTimeout = timeout
+            tls.startHandshake()
+            val out = tls.outputStream
+            val inputStream = tls.inputStream
+            output = out
+            input = inputStream
+            val target = if (host.contains(':') && !host.startsWith("[")) "[$host]:$port" else "$host:$port"
+            val request = buildString {
+                append("CONNECT $target HTTP/1.1\r\n")
+                append("Host: $target\r\n")
+                if (proxyUser.isNotEmpty()) {
+                    val token = Base64.encodeToString("$proxyUser:$proxyPassword".toByteArray(Charsets.UTF_8), Base64.NO_WRAP)
+                    append("Proxy-Authorization: Basic $token\r\n")
+                }
+                append("\r\n")
+            }
+            out.write(request.toByteArray(Charsets.ISO_8859_1))
+            out.flush()
+            val status = readProxyLine(inputStream)
+            if (!status.contains(" 200")) throw IOException("HTTPS 代理 CONNECT 失败：$status")
+            while (readProxyLine(inputStream).isNotEmpty()) {
+                // 跳过剩余响应头
+            }
+        } catch (err: Exception) {
+            close()
+            throw err
+        }
+    }
+
+    override fun getInputStream(): InputStream? = input
+
+    override fun getOutputStream(): OutputStream? = output
+
+    override fun getSocket(): Socket? = socket
+
+    override fun close() {
+        runCatching { input?.close() }
+        runCatching { output?.close() }
+        runCatching { socket?.close() }
+        input = null
+        output = null
+        socket = null
+    }
+
+    private fun readProxyLine(input: InputStream): String {
+        val builder = StringBuilder()
+        while (true) {
+            val c = input.read()
+            if (c < 0) throw IOException("HTTPS 代理连接已断开")
+            if (c == '\n'.code) return builder.toString()
+            if (c != '\r'.code) {
+                if (builder.length >= 8192) throw IOException("HTTPS 代理响应头过长")
+                builder.append(c.toChar())
+            }
+        }
     }
 }

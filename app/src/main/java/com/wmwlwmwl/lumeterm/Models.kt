@@ -115,7 +115,7 @@ fun Connection.normalizedForSync(): Connection {
         )
         else -> base.copy(
             proxyNodeId = "",
-            proxyType = if (base.proxyType == "http") "http" else "socks5",
+            proxyType = if (base.proxyType == "http" || base.proxyType == "https") base.proxyType else "socks5",
             proxyPort = if (base.proxyPort in 1..65535) base.proxyPort else 1080,
         )
     }
@@ -184,6 +184,7 @@ fun JSONObject.toConnection() = Connection(
     // 缺省不填 socks5：由 normalizedForSync 在 direct 时清掉
     proxyType = when (optString("proxyType")) {
         "http" -> "http"
+        "https" -> "https"
         "socks5" -> "socks5"
         else -> ""
     },
@@ -240,7 +241,7 @@ fun credentialsFromJson(json: String): List<Credential> {
 fun ProxyNode.toJson() = JSONObject().apply {
     put("id", id)
     put("name", name)
-    put("type", if (type == "http") "http" else "socks5")
+    put("type", if (type == "http" || type == "https") type else "socks5")
     put("host", host)
     put("port", port)
     put("username", username)
@@ -251,7 +252,7 @@ fun ProxyNode.toJson() = JSONObject().apply {
 fun JSONObject.toProxyNode() = ProxyNode(
     id = optString("id"),
     name = optString("name"),
-    type = if (optString("type") == "http") "http" else "socks5",
+    type = if (optString("type") == "http" || optString("type") == "https") optString("type") else "socks5",
     host = optString("host"),
     port = optInt("port", 1080),
     username = optString("username"),

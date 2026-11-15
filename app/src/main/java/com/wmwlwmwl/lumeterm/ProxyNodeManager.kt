@@ -123,6 +123,7 @@ private fun ProxyEditDialog(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     LuminChoiceChip("SOCKS5", type == "socks5", { type = "socks5" })
                     LuminChoiceChip("HTTP", type == "http", { type = "http" })
+                    LuminChoiceChip("HTTPS", type == "https", { type = "https" })
                 }
                 OutlinedTextField(host, { host = it }, label = { Text(stringResource(R.string.proxy_host)) }, modifier = Modifier.fillMaxWidth(), shape = LuminControlShape, colors = luminTextFieldColors(), singleLine = true)
                 OutlinedTextField(port, { port = it.filter { c -> c.isDigit() } }, label = { Text(stringResource(R.string.proxy_port)) }, modifier = Modifier.fillMaxWidth(), shape = LuminControlShape, colors = luminTextFieldColors(), singleLine = true)
@@ -137,7 +138,7 @@ private fun ProxyEditDialog(
                                 ProxyNode(
                                     id = initial?.id ?: UUID.randomUUID().toString(),
                                     name = name,
-                                    type = if (type == "http") "http" else "socks5",
+                                    type = if (type == "http" || type == "https") type else "socks5",
                                     host = host,
                                     port = port.toIntOrNull() ?: 1080,
                                     username = username,
