@@ -45,6 +45,18 @@ data class Credential(
     val lastModified: Long = System.currentTimeMillis(),
 )
 
+/** 合并引用凭据的用户名/密码/密钥，得到实际生效的连接配置 */
+fun Connection.withCredential(credentials: List<Credential>): Connection {
+    val credential = credentials.firstOrNull { it.id == credentialId } ?: return this
+    return copy(
+        username = credential.username.ifBlank { username },
+        password = credential.password,
+        authMethod = credential.authMethod,
+        privateKey = credential.privateKey,
+        passphrase = credential.passphrase,
+    )
+}
+
 data class ProxyNode(
     val id: String,
     val name: String = "",

@@ -2,6 +2,11 @@
 
 package com.wmwlwmwl.lumeterm
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -28,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
@@ -38,9 +44,24 @@ fun CompactConnectionRow(
     onEdit: () -> Unit,
     onClone: () -> Unit,
     onDelete: () -> Unit,
+    credentials: List<Credential> = emptyList(),
     hideSensitive: Boolean = false,
 ) {
     var showMenu by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val effective = conn.withCredential(credentials)
+    fun copyText(text: String) {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboard.setPrimaryClip(ClipData.newPlainText("LumeTerm", text))
+        Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show()
+    }
+    fun copyPassword() {
+        if (effective.authMethod == "password" && effective.password.isNotEmpty()) {
+            copyText(effective.password)
+        } else {
+            Toast.makeText(context, R.string.copy_failed, Toast.LENGTH_SHORT).show()
+        }
+    }
     Card(
         Modifier.fillMaxWidth(),
         shape = LuminControlShape,
@@ -77,6 +98,10 @@ fun CompactConnectionRow(
                     DropdownMenuItem(text = { Text(stringResource(R.string.connect)) }, onClick = { showMenu = false; onConnect() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.edit)) }, onClick = { showMenu = false; onEdit() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.clone)) }, onClick = { showMenu = false; onClone() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.copy_ip)) }, onClick = { showMenu = false; copyText(conn.host) })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.copy_password)) }, onClick = { showMenu = false; copyPassword() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.copy_port)) }, onClick = { showMenu = false; copyText(conn.port.toString()) })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.copy_ssh_link)) }, onClick = { showMenu = false; copyText(buildSshLink(effective)) })
                     DropdownMenuItem(text = { Text(stringResource(R.string.delete)) }, onClick = { showMenu = false; onDelete() })
                 }
             }
@@ -104,4 +129,13 @@ fun ConnectionCard(
             }
         }
     }
+}
+
+/** 生成 ssh://用户名:密码@主机:端口；仅密码认证带密码段，IPv6 主机自动加方括号 */
+private fun buildSshLink(conn: Connection): String {
+    val host = if (conn.host.contains(':') && !conn.host.startsWith("[")) "[${conn.host}]" else conn.host
+    val user = Uri.encode(conn.username)
+    val password = if (conn.authMethod == "password") conn.password else ""
+    val auth = if (password.isNotEmpty()) "$user:${Uri.encode(password)}" else user
+    return "ssh://$auth@$host:${conn.port}"
 }

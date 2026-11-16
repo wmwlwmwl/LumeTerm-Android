@@ -32,6 +32,7 @@ import sh.calvin.reorderable.ReorderableLazyListState
 @Composable
 fun HomePage(
     connections: List<Connection>,
+    credentials: List<Credential>,
     orderedGroups: List<String>,
     groupedConnections: Map<String, List<Connection>>,
     collapsedGroups: SnapshotStateList<String>,
@@ -154,6 +155,7 @@ fun HomePage(
                                     if (index > 0) Spacer(Modifier.height(2.dp))
                                     CompactConnectionRow(
                                         conn = conn,
+                                        credentials = credentials,
                                         onConnect = { onConnect(conn) },
                                         onEdit = { onEdit(conn) },
                                         onClone = { onClone(conn) },

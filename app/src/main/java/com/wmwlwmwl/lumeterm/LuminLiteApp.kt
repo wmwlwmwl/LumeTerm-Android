@@ -460,17 +460,6 @@ fun LuminLiteApp(
     val existingGroups = groupedConnections.keys.toList()
     val orderedGroups = groupOrder.filter { it in existingGroups } + existingGroups.filterNot { it in groupOrder }.sortedBy { if (it == ungroupedLabel) "" else it.lowercase() }
 
-    fun withCredential(conn: Connection): Connection {
-        val credential = credentials.firstOrNull { it.id == conn.credentialId }
-        return if (credential == null) conn else conn.copy(
-            username = credential.username.ifBlank { conn.username },
-            password = credential.password,
-            authMethod = credential.authMethod,
-            privateKey = credential.privateKey,
-            passphrase = credential.passphrase,
-        )
-    }
-
     var collapsedBeforeGroupDrag by remember { mutableStateOf<List<String>?>(null) }
     val homeLazyListState = rememberLazyListState()
     val homeReorderableState = rememberReorderableLazyListState(homeLazyListState) { from, to ->
@@ -510,7 +499,7 @@ fun LuminLiteApp(
         val terminal = visibleTerminalScreen
         SshCommandScreen(
             store = store,
-            conn = withCredential(terminal.connection),
+            conn = terminal.connection.withCredential(credentials),
             requestedSessionId = terminal.backgroundSessionId,
             quickCommandsRaw = quickCommandsRaw,
             onBack = {
@@ -863,6 +852,7 @@ fun LuminLiteApp(
     if (screen == AppScreen.Home) {
         HomePage(
             connections = connections,
+            credentials = credentials,
             orderedGroups = orderedGroups,
             groupedConnections = groupedConnections,
             collapsedGroups = collapsedGroups,

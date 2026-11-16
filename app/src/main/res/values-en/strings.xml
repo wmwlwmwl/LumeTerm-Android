@@ -108,6 +108,12 @@ Local data is unaffected.</string>
     <string name="edit">Edit</string>
     <string name="clone">Clone</string>
     <string name="delete">Delete</string>
+    <string name="copy_ip">Copy IP</string>
+    <string name="copy_password">Copy Password</string>
+    <string name="copy_port">Copy Port</string>
+    <string name="copy_ssh_link">Copy SSH Link</string>
+    <string name="copied">Copied</string>
+    <string name="copy_failed">Copy Failed</string>
     <string name="connect">Connect</string>
     <string name="duplicate_server">A server with the same host, port, and username already exists</string>
 

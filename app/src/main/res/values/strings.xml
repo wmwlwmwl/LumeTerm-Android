@@ -109,6 +109,12 @@
     <string name="edit">编辑</string>
     <string name="clone">克隆</string>
     <string name="delete">删除</string>
+    <string name="copy_ip">复制 IP</string>
+    <string name="copy_password">复制密码</string>
+    <string name="copy_port">复制端口</string>
+    <string name="copy_ssh_link">复制 SSH 链接</string>
+    <string name="copied">已复制</string>
+    <string name="copy_failed">复制失败</string>
     <string name="connect">连接</string>
     <string name="duplicate_server">已存在相同主机、端口和用户名的服务器</string>
 
