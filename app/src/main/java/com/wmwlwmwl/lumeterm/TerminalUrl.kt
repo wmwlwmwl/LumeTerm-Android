@@ -8,7 +8,11 @@ private val URL_IN_WORD = Regex(
     """(?i)((?:https?|ftp)://[^\s<>"';|]+|www\.[^\s<>"';|]+|mailto:[^\s<>"';|]+)""",
 )
 
-private val TRAILING_PUNCT = charArrayOf('.', ',', ';', ':', '!', '?', ')', ']', '}', '>', '"', '\'')
+// 尾部截断：ASCII 与全角标点、反引号（Markdown/提示里的 `url` 不要带进链接）
+private val TRAILING_PUNCT = charArrayOf(
+    '.', ',', ';', ':', '!', '?', ')', ']', '}', '>', '"', '\'', '`',
+    '。', '，', '、', '；', '：', '！', '？', '）', '】', '》', '」',
+)
 
 data class TerminalUrlSpan(
     /** 行内起始下标（含） */
@@ -121,6 +125,7 @@ private fun stripTrailingPunct(rawInput: String): String {
     var raw = rawInput
     while (raw.isNotEmpty() && raw.last() in TRAILING_PUNCT) {
         if (raw.last() == ')' && raw.count { it == '(' } >= raw.count { it == ')' }) break
+        if (raw.last() == '）' && raw.count { it == '（' } >= raw.count { it == '）' }) break
         raw = raw.dropLast(1)
     }
     return raw

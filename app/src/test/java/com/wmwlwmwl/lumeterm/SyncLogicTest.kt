@@ -87,6 +87,17 @@ class SyncLogicTest {
     }
 
     @Test
+    fun extractTerminalUrlStripsBacktickAndFullWidthPunct() {
+        val line = "请输入自定义源地址（例如：`https://mirror.example.com/almalinux`）："
+        assertEquals("https://mirror.example.com/almalinux", extractTerminalUrl(line))
+        val spans = findTerminalUrlSpans(line)
+        assertEquals(1, spans.size)
+        assertEquals("https://mirror.example.com/almalinux", spans[0].url)
+        // 全角括号收尾同样不留进链接
+        assertEquals("https://a.test/x", extractTerminalUrl("（https://a.test/x）："))
+    }
+
+    @Test
     fun findTerminalUrlSpansHighlightsMatches() {
         val spans = findTerminalUrlSpans("see https://a.test/x. and www.b.test/y, end")
         assertEquals(2, spans.size)
