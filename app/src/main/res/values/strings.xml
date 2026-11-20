@@ -109,7 +109,7 @@
     <string name="edit">编辑</string>
     <string name="clone">克隆</string>
     <string name="delete">删除</string>
-    <string name="copy_ip">复制 IP</string>
+    <string name="copy_ip">复制主机地址</string>
     <string name="copy_password">复制密码</string>
     <string name="copy_port">复制端口</string>
     <string name="copy_ssh_link">复制 SSH 链接</string>
