@@ -22,6 +22,8 @@ import java.io.OutputStream
 import java.net.InetSocketAddress
 import java.net.Socket
 import java.security.MessageDigest
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -29,8 +31,10 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.ReentrantLock
+import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocket
 import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.X509TrustManager
 import kotlin.concurrent.withLock
 
 class HostKeyRejectedException : CancellationException("主机密钥未接受")
@@ -362,6 +366,7 @@ class SshShellSession(
                 port = conn.proxyPort,
                 username = conn.proxyUsername,
                 password = conn.proxyPassword,
+                allowInsecureTls = conn.proxyAllowInsecureTls,
             )
             else -> null
         } ?: return null
@@ -370,7 +375,7 @@ class SshShellSession(
             "http" -> ProxyHTTP(node.host, node.port).apply {
                 if (node.username.isNotBlank()) setUserPasswd(node.username, node.password)
             }
-            "https" -> HttpsProxy(node.host, node.port, node.username, node.password)
+            "https" -> HttpsProxy(node.host, node.port, node.username, node.password, node.allowInsecureTls)
             else -> ProxySOCKS5(node.host, node.port).apply {
                 if (node.username.isNotBlank()) setUserPasswd(node.username, node.password)
             }
@@ -432,6 +437,7 @@ private class HttpsProxy(
     private val proxyPort: Int,
     private val proxyUser: String = "",
     private val proxyPassword: String = "",
+    private val allowInsecureTls: Boolean = false,
 ) : Proxy {
     private var socket: Socket? = null
     private var input: InputStream? = null
@@ -442,11 +448,13 @@ private class HttpsProxy(
         socket = raw
         try {
             raw.connect(InetSocketAddress(proxyHost, proxyPort), timeout)
-            val tls = (SSLSocketFactory.getDefault() as SSLSocketFactory)
-                .createSocket(raw, proxyHost, proxyPort, true) as SSLSocket
+            val factory = if (allowInsecureTls) insecureFactory else SSLSocketFactory.getDefault() as SSLSocketFactory
+            val tls = factory.createSocket(raw, proxyHost, proxyPort, true) as SSLSocket
             socket = tls
-            // Android 默认 SSLSocketFactory 只校验证书链，主机名需手动开启校验
-            tls.sslParameters = tls.sslParameters.apply { endpointIdentificationAlgorithm = "HTTPS" }
+            if (!allowInsecureTls) {
+                // Android 默认 SSLSocketFactory 只校验证书链，主机名需手动开启校验
+                tls.sslParameters = tls.sslParameters.apply { endpointIdentificationAlgorithm = "HTTPS" }
+            }
             if (timeout > 0) tls.soTimeout = timeout
             tls.startHandshake()
             val out = tls.outputStream
@@ -501,6 +509,19 @@ private class HttpsProxy(
                 if (builder.length >= 8192) throw IOException("HTTPS 代理响应头过长")
                 builder.append(c.toChar())
             }
+        }
+    }
+
+    private companion object {
+        // 用户显式开启「允许自签证书」时才使用：只放宽代理本身的证书校验，
+        // 隧道建立后 JSch 仍会按 HostKey 校验目标服务器。
+        val insecureFactory: SSLSocketFactory by lazy {
+            val trustAll = object : X509TrustManager {
+                override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+                override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+                override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
+            }
+            SSLContext.getInstance("TLS").apply { init(null, arrayOf(trustAll), SecureRandom()) }.socketFactory
         }
     }
 }

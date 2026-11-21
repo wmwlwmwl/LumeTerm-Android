@@ -15,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -110,6 +111,7 @@ private fun ProxyEditDialog(
     var port by remember(initial?.id) { mutableStateOf((initial?.port ?: 1080).toString()) }
     var username by remember(initial?.id) { mutableStateOf(initial?.username ?: "") }
     var password by remember(initial?.id) { mutableStateOf(initial?.password ?: "") }
+    var allowInsecureTls by remember(initial?.id) { mutableStateOf(initial?.allowInsecureTls ?: false) }
 
     Dialog(onDismissRequest = onDismiss) {
         LuminDialogCard {
@@ -129,6 +131,19 @@ private fun ProxyEditDialog(
                 OutlinedTextField(port, { port = it.filter { c -> c.isDigit() } }, label = { Text(stringResource(R.string.proxy_port)) }, modifier = Modifier.fillMaxWidth(), shape = LuminControlShape, colors = luminTextFieldColors(), singleLine = true)
                 OutlinedTextField(username, { username = it }, label = { Text(stringResource(R.string.proxy_username_optional)) }, modifier = Modifier.fillMaxWidth(), shape = LuminControlShape, colors = luminTextFieldColors(), singleLine = true)
                 OutlinedTextField(password, { password = it }, label = { Text(stringResource(R.string.proxy_password_optional)) }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth(), shape = LuminControlShape, colors = luminTextFieldColors(), singleLine = true)
+                if (type == "https") {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                            Text(stringResource(R.string.allow_insecure_tls), style = MaterialTheme.typography.titleMedium, color = LuminColors.TextPrimary)
+                            Text(stringResource(R.string.allow_insecure_tls_hint), style = MaterialTheme.typography.bodySmall, color = LuminColors.TextMuted)
+                        }
+                        Switch(checked = allowInsecureTls, onCheckedChange = { allowInsecureTls = it })
+                    }
+                }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                     LuminSecondaryButton(onClick = onDismiss, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.cancel)) }
                     LuminPrimaryButton(
@@ -143,6 +158,7 @@ private fun ProxyEditDialog(
                                     port = port.toIntOrNull() ?: 1080,
                                     username = username,
                                     password = password,
+                                    allowInsecureTls = type == "https" && allowInsecureTls,
                                     updatedAt = System.currentTimeMillis(),
                                 ),
                             )

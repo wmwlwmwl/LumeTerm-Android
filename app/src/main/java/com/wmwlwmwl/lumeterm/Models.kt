@@ -31,6 +31,8 @@ data class Connection(
     val proxyPort: Int = 1080,
     val proxyUsername: String = "",
     val proxyPassword: String = "",
+    /** 允许 HTTPS 代理使用自签/不受信任证书：仅跳过代理证书校验 */
+    val proxyAllowInsecureTls: Boolean = false,
     val lastModified: Long = System.currentTimeMillis(),
 )
 
@@ -65,6 +67,8 @@ data class ProxyNode(
     val port: Int = 1080,
     val username: String = "",
     val password: String = "",
+    /** 允许 HTTPS 代理使用自签/不受信任证书：仅跳过代理证书校验 */
+    val allowInsecureTls: Boolean = false,
     val updatedAt: Long = System.currentTimeMillis(),
 )
 
@@ -117,6 +121,7 @@ fun Connection.normalizedForSync(): Connection {
             proxyPort = 0,
             proxyUsername = "",
             proxyPassword = "",
+            proxyAllowInsecureTls = false,
         )
         "node" -> base.copy(
             proxyType = "",
@@ -124,11 +129,13 @@ fun Connection.normalizedForSync(): Connection {
             proxyPort = 0,
             proxyUsername = "",
             proxyPassword = "",
+            proxyAllowInsecureTls = false,
         )
         else -> base.copy(
             proxyNodeId = "",
             proxyType = if (base.proxyType == "http" || base.proxyType == "https") base.proxyType else "socks5",
             proxyPort = if (base.proxyPort in 1..65535) base.proxyPort else 1080,
+            proxyAllowInsecureTls = base.proxyAllowInsecureTls && base.proxyType == "https",
         )
     }
 }
@@ -170,6 +177,7 @@ fun Connection.toJson() = JSONObject().apply {
     if (n.proxyPort != 0) put("proxyPort", n.proxyPort)
     if (n.proxyUsername.isNotEmpty()) put("proxyUsername", n.proxyUsername)
     if (n.proxyPassword.isNotEmpty()) put("proxyPassword", n.proxyPassword)
+    if (n.proxyAllowInsecureTls) put("proxyAllowInsecureTls", true)
     if (n.lastModified != 0L) put("last_modified", n.lastModified)
 }
 
@@ -204,6 +212,7 @@ fun JSONObject.toConnection() = Connection(
     proxyPort = if (has("proxyPort")) optInt("proxyPort") else 0,
     proxyUsername = optString("proxyUsername"),
     proxyPassword = optString("proxyPassword"),
+    proxyAllowInsecureTls = optBoolean("proxyAllowInsecureTls", false),
     lastModified = optLong("last_modified", System.currentTimeMillis()),
 ).normalizedForSync()
 
@@ -251,13 +260,16 @@ fun credentialsFromJson(json: String): List<Credential> {
 }
 
 fun ProxyNode.toJson() = JSONObject().apply {
+    val t = if (type == "http" || type == "https") type else "socks5"
     put("id", id)
     put("name", name)
-    put("type", if (type == "http" || type == "https") type else "socks5")
+    put("type", t)
     put("host", host)
     put("port", port)
     put("username", username)
     put("password", password)
+    // 与 PC NormalizeAIProxyNodes 一致：只有 HTTPS 代理才保留该开关
+    if (allowInsecureTls && t == "https") put("allowInsecureTls", true)
     put("updatedAt", updatedAt)
 }
 
@@ -269,6 +281,7 @@ fun JSONObject.toProxyNode() = ProxyNode(
     port = optInt("port", 1080),
     username = optString("username"),
     password = optString("password"),
+    allowInsecureTls = optBoolean("allowInsecureTls", false),
     updatedAt = optLong("updatedAt", System.currentTimeMillis()),
 )
 

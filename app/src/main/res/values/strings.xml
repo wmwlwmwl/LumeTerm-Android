@@ -110,6 +110,8 @@
     <string name="clone">克隆</string>
     <string name="delete">删除</string>
     <string name="copy_ip">复制主机地址</string>
+    <string name="allow_insecure_tls">允许自签证书</string>
+    <string name="allow_insecure_tls_hint">仅跳过代理证书校验，隧道内目标服务器仍按主机密钥校验</string>
     <string name="copy_password">复制密码</string>
     <string name="copy_port">复制端口</string>
     <string name="copy_ssh_link">复制 SSH 链接</string>

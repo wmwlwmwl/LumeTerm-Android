@@ -109,6 +109,8 @@ Local data is unaffected.</string>
     <string name="clone">Clone</string>
     <string name="delete">Delete</string>
     <string name="copy_ip">Copy Host</string>
+    <string name="allow_insecure_tls">Allow Self-signed Certificate</string>
+    <string name="allow_insecure_tls_hint">Only skips proxy certificate verification; target servers are still verified by host key</string>
     <string name="copy_password">Copy Password</string>
     <string name="copy_port">Copy Port</string>
     <string name="copy_ssh_link">Copy SSH Link</string>

@@ -64,6 +64,7 @@ fun ConnectionForm(
     var proxyPort by remember(formKey) { mutableStateOf((initial?.proxyPort ?: 1080).toString()) }
     var proxyUsername by remember(formKey) { mutableStateOf(initial?.proxyUsername ?: "") }
     var proxyPassword by remember(formKey) { mutableStateOf(initial?.proxyPassword ?: "") }
+    var proxyAllowInsecureTls by remember(formKey) { mutableStateOf(initial?.proxyAllowInsecureTls ?: false) }
     var allowLegacySshRsa by remember(formKey) { mutableStateOf(initial?.allowLegacySshRsa ?: false) }
     var proxyMenuOpen by remember { mutableStateOf(false) }
     val selectedCredential = credentials.firstOrNull { it.id == credentialId }
@@ -102,6 +103,7 @@ fun ConnectionForm(
                 proxyPort = proxyPort.toIntOrNull() ?: 1080,
                 proxyUsername = if (proxyMode == "custom") proxyUsername else "",
                 proxyPassword = if (proxyMode == "custom") proxyPassword else "",
+                proxyAllowInsecureTls = proxyMode == "custom" && proxyType == "https" && proxyAllowInsecureTls,
                 lastModified = System.currentTimeMillis(),
             ),
         )
@@ -230,6 +232,27 @@ fun ConnectionForm(
                     OutlinedTextField(proxyPort, { proxyPort = it.filter { c -> c.isDigit() } }, label = { Text(stringResource(R.string.proxy_port)) }, modifier = Modifier.fillMaxWidth(), shape = LuminControlShape, colors = luminTextFieldColors(), singleLine = true)
                     OutlinedTextField(proxyUsername, { proxyUsername = it }, label = { Text(stringResource(R.string.proxy_username_optional)) }, modifier = Modifier.fillMaxWidth(), shape = LuminControlShape, colors = luminTextFieldColors(), singleLine = true)
                     OutlinedTextField(proxyPassword, { proxyPassword = it }, label = { Text(stringResource(R.string.proxy_password_optional)) }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth(), shape = LuminControlShape, colors = luminTextFieldColors(), singleLine = true)
+                    if (proxyType == "https") {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                                Text(
+                                    stringResource(R.string.allow_insecure_tls),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = LuminColors.TextPrimary,
+                                )
+                                Text(
+                                    stringResource(R.string.allow_insecure_tls_hint),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = LuminColors.TextMuted,
+                                )
+                            }
+                            Switch(checked = proxyAllowInsecureTls, onCheckedChange = { proxyAllowInsecureTls = it })
+                        }
+                    }
                 }
             }
 
